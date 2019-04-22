@@ -8,8 +8,8 @@
  - notifClass: ''
  - notifText: ''
  ## Methods
- - openNotif //
- - openSnackbar //
+ - openNotif 
+ - openSnackbar 
  - errorSnackbar
  ## Created
- - openNotif //
+ - openNotif 
