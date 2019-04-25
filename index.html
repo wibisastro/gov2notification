@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://api.kl2.web.id/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
     <script src="https://api.kl2.web.id/js/vue.js"></script>
     <script src="https://api.kl2.web.id/js/httpVueLoader.js"></script>
@@ -19,31 +19,44 @@
     <section class="hero is-primary">
     	<div> </div>
     </section>
-        
     <section class="section">
         <div class="container">
             <div class="columns">
               <div class="column is-narrow">
                 <div style="width: 200px;"></div>
               </div>
-              <div class="column">
+              <div class="column" v-on:click="seen = !seen">
                 <h1 class="title">Notification Component</h1>
                 <h2 class="subtitle"></h2>                                
-                <span>&nbsp;</span>
-                  <gov2navbreadcrumb :path-url="pathurl"></gov2navbreadcrumb>          
                 <span>&nbsp;</span>
                 <div class="field is-horizontal">
                   <div class="field-body">
                     <div class="field is-grouped is-grouped-right">
-                        <gov2button button-label="Tambah Data!"></gov2button>
+                        <div  class="control">
+                          <div v-if="isPressed">
+                              <a class="button is-block is-primary" @click="toggleClick">
+                                  <span class="icon">
+                                    <i  class="fa fa-plus"></i>
+                                  </span>
+                                  <span>{{ open }}</span>
+                              </a>
+                          </div>
+                          <div v-else>
+                            <a class="button is-warning" @click="toggleClick">
+                                  <span class="icon">
+                                    <i  class="fa fa-minus"></i>
+                                  </span>
+                                  <span>{{ close }}</span>
+                              </a>
+                          </div>
+                        </div>  
                     </div>
                   </div>
                 </div>
                 <span>&nbsp;</span>
-                <div>
+                <div v-show="seen">
                   <gov2notification></gov2notification>
                 </div>
-               </div>
             </div>
         </div>
     </section>
@@ -60,26 +73,35 @@
 </div>
  
  <script type="text/javascript">
+
   new Vue({
 	    el: '#app',
     components: {
-	          'gov2button': httpVueLoader('vue/gov2button.vue'),
-            'breadcrumbd': httpVueLoader('vue/breadcrumbd.vue'),
-            'gov2notification': httpVueLoader('vue/gov2notification.vue'),
+            'gov2notification': httpVueLoader('vue/gov2notification.vue')
 	           },
 
 	   data () {
-        return {"pathurl":"\/components\/gov2nav\/breadcrumb\/components\/gov2notification\/","isPressed":false}
+        return {
+          seen:false,
+          isPressed:true,
+          open:"Open notif",
+          close: "Close notif"
+        }
     },
     methods: {
-        toggleClick: function(data) {this.isPressed=data;},demoNotif: function(data) { 
-        var response=[];
-        response["class"]="is-info";
-        response["notification"]="Test Notification";
-        eventBus.$emit("openNotif",response);},
+        toggleClick: function(data) {
+          this.isPressed = !this.isPressed;
+          eventBus.$emit('toggleClick',this.isPressed);
+        },
+        demoNotif: function(data) {
+          var response=[];
+          response["class"]="is-info";
+          response["notification"]="Test Notification";
+          eventBus.$emit("openNotif",response);
+        },
     },
     created: function () {
-        eventBus.$on("toggleClick", this.toggleClick);eventBus.$on("toggleClick", this.demoNotif);
+        eventBus.$on("toggleClick", this.demoNotif);
     },
   });
 </script>
